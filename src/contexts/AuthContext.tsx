@@ -18,7 +18,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const isTestMode = import.meta.env.VITE_TEST_MODE === 'true'
+
   useEffect(() => {
+    if (isTestMode) {
+      const mockUser = {
+        id: '00000000-0000-0000-0000-000000000000',
+        email: 'test@example.com',
+        created_at: new Date().toISOString(),
+      } as User
+      setUser(mockUser)
+      setSession({ user: mockUser } as Session)
+      setLoading(false)
+      return
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       setUser(session?.user ?? null)
@@ -34,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [isTestMode])
 
   const signUp = async (email: string, password: string) => {
     const { error } = await supabase.auth.signUp({ email, password })

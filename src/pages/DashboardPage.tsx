@@ -11,12 +11,8 @@ export const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) {
-      navigate('/login')
-      return
-    }
     loadJourneys()
-  }, [user, navigate])
+  }, [user])
 
   const loadJourneys = async () => {
     try {
@@ -36,7 +32,6 @@ export const DashboardPage: React.FC = () => {
 
   const handleSignOut = async () => {
     await signOut()
-    navigate('/login')
   }
 
   const handleDeleteJourney = async (id: string) => {
